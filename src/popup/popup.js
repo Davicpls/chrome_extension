@@ -2,16 +2,36 @@ class Timer {
   constructor() {
     this.currentCycle = 0;
     this.interval = null;
+    this.audioFocus = new Audio("/src/sounds/focus.mp3");
+    this.audioRest = new Audio("/src/sounds/rest.mp3");
+    this.audioFinish = new Audio("path/to/alert.mp3");
   }
 
   validateNumberInput(input) {
     return typeof input === "number" && input > 0;
   }
 
-  startTimer(duration, displayElementId, callback) {
+  playSoundFocus() {
+    this.audioFocus.play();
+    setTimeout(() => {
+      this.audioFocus.pause();
+      this.audioFocus.currentTime = 0;
+    }, 5000);
+  }
+
+  playSoundRest() {
+    this.audioRest.play();
+    setTimeout(() => {
+      this.audioRest.pause();
+      this.audioRest.currentTime = 0;
+    }, 5000);
+  }
+
+  startTimer(duration, displayElementId, callback, count = 0) {
     if (this.interval) {
       clearInterval(this.interval);
     }
+    count++;
 
     let currentTime = duration * 60;
 
@@ -28,6 +48,8 @@ class Timer {
       document.getElementById(displayElementId).textContent = timeString;
 
       if (currentTime <= 0) {
+        this.playSoundRest();
+
         clearInterval(this.interval);
         callback();
       }
@@ -38,10 +60,6 @@ class Timer {
     const focusTime = Number(document.getElementById("input-focus").value);
     const restTime = Number(document.getElementById("input-rest").value);
     const cycles = Number(document.getElementById("input-cycles").value);
-
-    document.getElementById("timerDisplayFocus").textContent = focusTime;
-    document.getElementById("timerDisplayRest").textContent = restTime;
-    document.getElementById("remainingCycles").textContent = cycles;
 
     if (
       this.validateNumberInput(focusTime) &&
@@ -72,10 +90,22 @@ class Timer {
     }
   }
   reset() {
-    this.interval = null;
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+
+    this.focusTime = "0:00";
+    this.restTime = "0:00";
+    this.cycles = 0;
     this.currentCycle = 0;
+
+    document.getElementById("timerDisplayFocus").textContent = this.focusTime;
+    document.getElementById("timerDisplayRest").textContent = this.restTime;
+    document.getElementById("remainingCycles").textContent = this.cycles;
   }
 }
 
 const timer = new Timer();
 document.getElementById("start").addEventListener("click", () => timer.start());
+document.getElementById("reset").addEventListener("click", () => timer.reset());

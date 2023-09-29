@@ -112,6 +112,7 @@ button {
 .button-container {
   padding-right: 30px;
   width: 100%;
+  gap: 25px;
   display: flex;
   justify-content: end;
 }

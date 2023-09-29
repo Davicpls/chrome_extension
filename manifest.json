@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Minha Extensão com React e MUI",
+    "name": "Pomodoro-like-ish timer",
     "version": "1.0",
     "description": "Não sei ainda",
     "background": {
