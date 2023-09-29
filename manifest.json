@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Pomodoro-like-ish timer",
     "version": "1.0",
-    "description": "Não sei ainda",
+    "description": "Custom cyclic timer",
     "background": {
       "service_worker": "/src/background/background.js"
     },
