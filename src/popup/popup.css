@@ -1,18 +1,20 @@
-body, html {
+body,
+html {
   display: flex;
   width: 400px;
   height: 200px;
   align-content: center;
 }
 
-:root{
+:root {
   display: flex;
   width: 100%;
-  
 }
 
 * {
+  background-color: #0e0d0d;
   font-family: "JetBrains Mono", monospace;
+  color: #fefefe;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -25,16 +27,106 @@ body, html {
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  height: 100%
+  height: 85%;
 }
 
 .popup-wrapper-2 {
-  width: 400px;
-  height: 100%
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.divider{
-  background-color: blue;
+.column-wrapper {
+  width: 400px;
+  height: 100%;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.divider {
+  background-color: #e0e0e0;
+  margin-top: 4px;
+  margin-bottom: 5px;
   height: 0.1px;
   width: 100%;
+}
+
+input {
+  width: 45px;
+  height: 18px;
+  color: #0e0d0d;
+  background-color: #fefefe;
+  border: 0px;
+  border-radius: 1px;
+}
+
+button {
+  height: 25px;
+  width: 60px;
+  color: #fefefe;
+  font-weight: bolder;
+  background-color: orange;
+  border: #ada6a6;
+  border-radius: 2px;
+}
+
+.text-input-column {
+  display: flex;
+  gap: 30px;
+  align-items: start;
+  flex-direction: column;
+}
+
+.input-column {
+  display: flex;
+  gap: 30px;
+  align-items: start;
+  flex-direction: column;
+}
+
+.timer {
+  border-radius: 2px;
+  height: 85px;
+  width: 100px;
+  gap: 15px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-direction: row;
+  background-color: #fefefe;
+  font-size: 12px;
+  padding: 5px;
+}
+
+.timer-index {
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
+  background-color: #fefefe;
+  color: #0e0d0d;
+  align-items: start;
+  flex-direction: column;
+}
+.button-container {
+  padding-right: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.timer-itself {
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
+  background-color: #fefefe;
+  color: #0e0d0d;
+  align-items: start;
+  flex-direction: column;
+}
+
+.background-font-color{
+  background-color: #fefefe;
+  color: #0e0d0d;
 }

@@ -5,17 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Extensão</title>
     <link rel="stylesheet" href="./popup/popup.css" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="root">
-      <div class="popup-wrapper-1">
-        Focus Timer
-        <div class="divider"></div>
-        <div class="popup-wrapper-2">
-            dasds
+      <div id="wrapper-1" class="popup-wrapper-1">
+        <header id="header">Focus Timer</header>
+        <div id="divider" class="divider"></div>
+        <div id="wrapper-2" class="popup-wrapper-2">
+          <div class="column-wrapper">
+            <div class="text-input-column">
+              <div id="focus-time-input">Focus time:</div>
+              <div id="rest-time-input">Rest time:</div>
+              <div id="cycles-input">Cycles:</div>
+            </div>
+            <div class="input-column">
+              <input value="" type="number" id="input-focus" />
+              <input value="" type="number" id="input-rest" />
+              <input value="" type="number" id="input-cycles" />
+            </div>
+            <div id="timer" class="timer">
+              <div class="timer-index">
+                <div class="background-font-color" >Focus</div>
+                <div class="background-font-color" >Rest</div>
+                <div class="background-font-color">Cycles</div>
+              </div>
+              <div class="timer-itself">
+                <div id="timerDisplayFocus" class="background-font-color">00:00</div>
+                <div id="timerDisplayRest" class="background-font-color">0:00</div>
+                <div id="remainingCycles" class="background-font-color">0</div>
+              </div>
+            </div>
+          </div>
+          <div class="button-container">
+            <button id="start">Start</button>
+          </div>
         </div>
       </div>
     </div>
+    <script type="module" src="popup/popup.js"></script>
   </body>
 </html>
