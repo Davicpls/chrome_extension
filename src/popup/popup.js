@@ -1,3 +1,5 @@
+/* global chrome */
+
 class Timer {
   constructor() {
     this.currentCycle = 0;
@@ -27,11 +29,10 @@ class Timer {
     }, 5000);
   }
 
-  startTimer(duration, displayElementId, callback, count = 0) {
+  startTimer(duration, displayElementId, callback) {
     if (this.interval) {
       clearInterval(this.interval);
     }
-    count++;
 
     let currentTime = duration * 60;
 
@@ -46,6 +47,10 @@ class Timer {
         .join(":");
 
       document.getElementById(displayElementId).textContent = timeString;
+
+      chrome.runtime.sendMessage({ command: "getState" }, () => {
+        document.getElementById(displayElementId).textContent = timeString;
+      });
 
       if (currentTime <= 0) {
         this.playSoundRest();
@@ -68,13 +73,19 @@ class Timer {
     ) {
       this.currentCycle = 0;
 
+      chrome.runtime.sendMessage({
+        command: "startTimer",
+        focusTime: focusTime,
+        restTime: restTime,
+        cycles: cycles
+      });
+
       const runCycle = () => {
         if (this.currentCycle < cycles * 2) {
           const isFocusTime = this.currentCycle % 2 === 0;
 
           if (isFocusTime) {
             this.startTimer(focusTime, "timerDisplayFocus", runCycle);
-          } else {
             this.startTimer(restTime, "timerDisplayRest", runCycle);
           }
 
@@ -107,5 +118,6 @@ class Timer {
 }
 
 const timer = new Timer();
+
 document.getElementById("start").addEventListener("click", () => timer.start());
 document.getElementById("reset").addEventListener("click", () => timer.reset());
