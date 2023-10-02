@@ -3,67 +3,44 @@
 class Timer {
   constructor() {
     this.currentCycle = 0;
-    this.interval = null;
     this.counter = 0;
-    this.audioFocus = new Audio("/src/sounds/focus.mp3");
-    this.audioRest = new Audio("/src/sounds/rest.mp3");
-    this.audioFinish = new Audio("path/to/alert.mp3");
+    chrome.runtime.onMessage.addListener(this.handleMessages.bind(this));
   }
 
   validateNumberInput(input) {
     return typeof input === "number" && input > 0;
   }
 
-  playSoundFocus() {
-    this.audioFocus.play();
-    setTimeout(() => {
-      this.audioFocus.pause();
-      this.audioFocus.currentTime = 0;
-    }, 5000);
-  }
-
-  playSoundRest() {
-    this.audioRest.play();
-    setTimeout(() => {
-      this.audioRest.pause();
-      this.audioRest.currentTime = 0;
-    }, 5000);
-  }
-
-  startTimer(duration, displayElementId, callback) {
-    if (this.interval) {
-      clearInterval(this.interval);
+  handleMessages(message) {
+    if (message.command === "updateTime") {
+      const { timeString, elementId } = message;
+      document.getElementById(elementId).textContent = timeString;
+    } else if (message.command === "decrementCycle") {
+      const { cyclesDecrement } = message;
+      document.getElementById("remainingCycles").textContent = cyclesDecrement;
+    } else if (message.command === "playSoundRest") {
+      let audioRest = new Audio("/src/sounds/rest.mp3");
+      audioRest.play();
+      setTimeout(() => {
+        audioRest.pause();
+        audioRest.currentTime = 0;
+      }, 5000);
+    } else if (message.command === "playSoundFocus") {
+      let audioFocus = new Audio("/src/sounds/focus.mp3");
+      audioFocus.play();
+      setTimeout(() => {
+        audioFocus.pause();
+        audioFocus.currentTime = 0;
+      }, 5000);
+    } else if (message.command === "playSoundFinish") {
+      let audioFinish = new Audio("/src/sounds/finish.mp3");
+      audioFinish.play();
+      setTimeout(() => {
+        audioFinish.pause();
+        audioFinish.currentTime = 0;
+      }, 5000);
+      alert("All cycles completed!");
     }
-
-    let currentTime = duration * 60;
-
-    this.interval = setInterval(() => {
-      currentTime--;
-
-      const minutes = Math.floor(currentTime / 60);
-      const seconds = currentTime % 60;
-
-      const timeString = [minutes, seconds]
-        .map((v) => (v < 10 ? "0" + v : v))
-        .join(":");
-
-      document.getElementById(displayElementId).textContent = timeString;
-
-      /*       chrome.runtime.sendMessage({ command: "getState" }, () => {
-        document.getElementById(displayElementId).textContent = timeString;
-      }); */
-
-      if (currentTime <= 0) {
-        if (this.counter % 2 === 0) {
-          this.playSoundRest();
-        } else {
-          this.playSoundFocus();
-        }
-        this.counter++;
-        clearInterval(this.interval);
-        callback();
-      }
-    }, 1000);
   }
 
   start() {
@@ -79,41 +56,20 @@ class Timer {
       this.validateNumberInput(restTime) &&
       this.validateNumberInput(cycles)
     ) {
-      this.currentCycle = 0;
-
-      /*       chrome.runtime.sendMessage({
+      chrome.runtime.sendMessage({
         command: "startTimer",
         focusTime: focusTime,
         restTime: restTime,
         cycles: cycles,
-
-      }); */
-
-      const runCycle = () => {
-        if (this.currentCycle < cycles * 2) {
-          const isFocusTime = this.currentCycle % 2 === 0;
-
-          if (isFocusTime) {
-            this.startTimer(focusTime, "timerDisplayFocus", runCycle);
-          } else {
-            this.startTimer(restTime, "timerDisplayRest", runCycle);
-          }
-          this.currentCycle++;
-          console.log(this.currentCycle)
-          if (this.currentCycle % 2 === 1 && this.currentCycle > 2) {
-            cyclesDecrement--
-            document.getElementById("remainingCycles").textContent = cyclesDecrement;
-          }
-        } else {
-          alert("All cycles completed!");
-        }
-      };
-
-      runCycle();
-    } else {
-      alert("Valores de entrada inválidos!");
+        cyclesDecrement: cyclesDecrement,
+      });
+    }
+    else {
+      alert('Those are not valid numbers!')
     }
   }
+
+
   reset() {
     if (this.interval) {
       clearInterval(this.interval);
@@ -125,6 +81,10 @@ class Timer {
     this.cycles = 0;
     this.currentCycle = 0;
 
+    chrome.runtime.sendMessage({
+      command: "resetTimer",
+    })
+
     document.getElementById("timerDisplayFocus").textContent = this.focusTime;
     document.getElementById("timerDisplayRest").textContent = this.restTime;
     document.getElementById("remainingCycles").textContent = this.cycles;
@@ -135,3 +95,17 @@ const timer = new Timer();
 
 document.getElementById("start").addEventListener("click", () => timer.start());
 document.getElementById("reset").addEventListener("click", () => timer.reset());
+
+document.addEventListener("DOMContentLoaded", function () {
+  chrome.runtime.sendMessage({ command: "getState" }, function (response) {
+    if (response && response.timeString && response.elementId) {
+      document.getElementById(response.elementId).textContent =
+        response.timeString;
+    }
+  });
+});
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.command === "isPopupOpen") {
+    sendResponse({ isOpen: true });
+  }
+});
