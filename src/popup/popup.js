@@ -4,6 +4,7 @@ class Timer {
   constructor() {
     this.currentCycle = 0;
     this.interval = null;
+    this.counter = 0;
     this.audioFocus = new Audio("/src/sounds/focus.mp3");
     this.audioRest = new Audio("/src/sounds/rest.mp3");
     this.audioFinish = new Audio("path/to/alert.mp3");
@@ -48,13 +49,17 @@ class Timer {
 
       document.getElementById(displayElementId).textContent = timeString;
 
-      chrome.runtime.sendMessage({ command: "getState" }, () => {
+      /*       chrome.runtime.sendMessage({ command: "getState" }, () => {
         document.getElementById(displayElementId).textContent = timeString;
-      });
+      }); */
 
       if (currentTime <= 0) {
-        this.playSoundRest();
-
+        if (this.counter % 2 === 0) {
+          this.playSoundRest();
+        } else {
+          this.playSoundFocus();
+        }
+        this.counter++;
         clearInterval(this.interval);
         callback();
       }
@@ -66,6 +71,9 @@ class Timer {
     const restTime = Number(document.getElementById("input-rest").value);
     const cycles = Number(document.getElementById("input-cycles").value);
 
+    let cyclesDecrement = Number(document.getElementById("input-cycles").value);
+    document.getElementById("remainingCycles").textContent = cyclesDecrement;
+
     if (
       this.validateNumberInput(focusTime) &&
       this.validateNumberInput(restTime) &&
@@ -73,12 +81,13 @@ class Timer {
     ) {
       this.currentCycle = 0;
 
-      chrome.runtime.sendMessage({
+      /*       chrome.runtime.sendMessage({
         command: "startTimer",
         focusTime: focusTime,
         restTime: restTime,
-        cycles: cycles
-      });
+        cycles: cycles,
+
+      }); */
 
       const runCycle = () => {
         if (this.currentCycle < cycles * 2) {
@@ -86,10 +95,15 @@ class Timer {
 
           if (isFocusTime) {
             this.startTimer(focusTime, "timerDisplayFocus", runCycle);
+          } else {
             this.startTimer(restTime, "timerDisplayRest", runCycle);
           }
-
           this.currentCycle++;
+          console.log(this.currentCycle)
+          if (this.currentCycle % 2 === 1 && this.currentCycle > 2) {
+            cyclesDecrement--
+            document.getElementById("remainingCycles").textContent = cyclesDecrement;
+          }
         } else {
           alert("All cycles completed!");
         }
