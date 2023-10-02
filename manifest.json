@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Pomodoro-like-ish timer",
+  "name": "Full custom focus timer",
   "version": "1.0",
   "web_accessible_resources": [
     {
