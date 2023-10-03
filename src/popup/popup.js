@@ -63,12 +63,10 @@ class Timer {
         cycles: cycles,
         cyclesDecrement: cyclesDecrement,
       });
-    }
-    else {
-      alert('Those are not valid numbers!')
+    } else {
+      alert("Those are not valid numbers!");
     }
   }
-
 
   reset() {
     if (this.interval) {
@@ -83,7 +81,7 @@ class Timer {
 
     chrome.runtime.sendMessage({
       command: "resetTimer",
-    })
+    });
 
     document.getElementById("timerDisplayFocus").textContent = this.focusTime;
     document.getElementById("timerDisplayRest").textContent = this.restTime;
